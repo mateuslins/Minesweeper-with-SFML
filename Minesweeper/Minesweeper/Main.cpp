@@ -1,14 +1,25 @@
 #include <iostream>
+#include <ctime>
+#include <sstream>
+#include <string>
 #include <SFML/Graphics.hpp>
 #include "UnderTile.h"
 
 
 int main() {
 
+	srand((unsigned)time(0));
+
 	//Init window
 	const int width = 800;
 	const int heigth = 600;
 	sf::RenderWindow window(sf::VideoMode(width, heigth), "Minesweeper", sf::Style::Close | sf::Style::Titlebar);
+
+	//Init resources
+	sf::Texture texture;
+	texture.loadFromFile("sand.jpg");
+	sf::Sprite sprite;
+	sprite.setTexture(texture);
 
 	//Init grid
 	const int mapSize = 12;
@@ -25,8 +36,25 @@ int main() {
 		for (int j = 0; j < mapSize; j++) {
 
 			underTileMap[i][j].adjustPosition(i, j, topDistance, rigthDistance);
+			underTileMap[i][j].loadFont();
+			//underTileMap[i][j].changeText();
 		}
 	}
+
+	//Init bombs
+	int bombsQuant = 30;
+	while (bombsQuant > 0) {
+
+		int i = rand() % mapSize;
+		int j = rand() % mapSize;
+
+		if (underTileMap[i][j].getType() != 9) {
+
+			underTileMap[i][j].plantBomb();
+			bombsQuant--;
+		}
+	}
+
 
 	while (window.isOpen()) {
 
@@ -46,6 +74,9 @@ int main() {
 
 		//Render
 		window.clear();
+
+		//Render background
+		window.draw(sprite);
 
 		//Render grid
 		for (int i = 0; i < mapSize; i++) {
