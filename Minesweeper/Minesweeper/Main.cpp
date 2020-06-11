@@ -4,6 +4,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "UnderTile.h"
+#include "Functions.h"
+
 
 
 int main() {
@@ -23,41 +25,34 @@ int main() {
 
 	//Init grid
 	const int mapSize = 12;
+	float topDistance = window.getSize().x / 5.f;
+	float rightDistance = window.getSize().y / 5.f;
 
 	std::vector<std::vector<UnderTile>> underTileMap; //Vector of vectors = 2D
-	underTileMap.resize(mapSize, std::vector<UnderTile>()); //Resizing to (mapSize) vectors of UnderTiles (making a line)
+	
+	initGrid(underTileMap, mapSize, topDistance, rightDistance);
 
-	float topDistance = window.getSize().x / 5.f;
-	float rigthDistance = window.getSize().y / 5.f;
-
-	for (int i = 0; i < mapSize; i++) {
-
-		underTileMap[i].resize(mapSize, UnderTile()); //Resizing to (mapSize) UnderTiles per vector (making column)
-		for (int j = 0; j < mapSize; j++) {
-
-			underTileMap[i][j].adjustPosition(i, j, topDistance, rigthDistance);
-			underTileMap[i][j].loadFont();
-			//underTileMap[i][j].changeText();
-		}
-	}
+	//Init mouse position
+	sf::Vector2i mousePosWindow;
+	float tileSize = underTileMap[0][0].getSize();
 
 	//Init bombs
 	int bombsQuant = 30;
-	while (bombsQuant > 0) {
+	initBombs(bombsQuant, underTileMap, mapSize);
+	
 
-		int i = rand() % mapSize;
-		int j = rand() % mapSize;
-
-		if (underTileMap[i][j].getType() != 9) {
-
-			underTileMap[i][j].plantBomb();
-			bombsQuant--;
-		}
-	}
+	//Init near bombs counter
+	nearBombsCounter(underTileMap, mapSize);
 
 
 	while (window.isOpen()) {
 
+		//Update mouse position
+		mousePosWindow = sf::Mouse::getPosition(window);
+		int x = (mousePosWindow.x / tileSize) - (topDistance / tileSize);
+		int y = (mousePosWindow.y / tileSize) - (rightDistance / tileSize);
+
+		//Events
 		sf::Event event;
 
 		while (window.pollEvent(event)) {
@@ -65,6 +60,17 @@ int main() {
 			switch (event.type) {
 			case sf::Event::Closed:
 				window.close();
+				break;
+
+			case sf::Event::MouseButtonPressed:
+				if (event.key.code == sf::Mouse::Left) {
+
+					if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
+
+						if (underTileMap[x][y].getType() == 9)
+							std::cout << "Game Over" << std::endl;
+					}
+				}
 				break;
 
 			default:

@@ -16,7 +16,7 @@ UnderTile::UnderTile()
 
 	text.setCharacterSize(size);
 	text.setFillColor(sf::Color::Black);
-	text.setString("X");
+	text.setString(" ");
 }
 
 
@@ -47,6 +47,11 @@ int UnderTile::getType()
 	return type;
 }
 
+float UnderTile::getSize()
+{
+	return size;
+}
+
 void UnderTile::loadFont()
 {
 	font.loadFromFile("Arial.ttf");
@@ -65,4 +70,10 @@ void UnderTile::changeText()
 		text.setString(std::to_string(type));
 		break;
 	}
+}
+
+void UnderTile::addOnType()
+{
+	type++;
+	changeText();
 }

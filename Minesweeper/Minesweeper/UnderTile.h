@@ -15,8 +15,10 @@ public:
 	void drawTile(sf::RenderWindow &window);
 	void plantBomb();
 	int getType();
+	float getSize();
 	void loadFont();
 	void changeText();
+	void addOnType();
 
 private:
 	sf::RectangleShape tile;
