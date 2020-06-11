@@ -4,6 +4,7 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "UnderTile.h"
+#include "UpperTile.h"
 #include "Functions.h"
 
 
@@ -32,6 +33,10 @@ int main() {
 	
 	initGrid(underTileMap, mapSize, topDistance, rightDistance);
 
+	std::vector<std::vector<UpperTile>> upperTileMap; //Vector of vectors = 2D
+
+	initUpperGrid(upperTileMap, mapSize, topDistance, rightDistance);
+
 	//Init mouse position
 	sf::Vector2i mousePosWindow;
 	float tileSize = underTileMap[0][0].getSize();
@@ -43,6 +48,21 @@ int main() {
 
 	//Init near bombs counter
 	nearBombsCounter(underTileMap, mapSize);
+
+	//Init texts on screen
+	sf::Font font;
+	font.loadFromFile("Arial.ttf");
+
+	sf::Text gameOverText;
+	gameOverText.setFont(font);
+	gameOverText.setCharacterSize(48.f);
+	gameOverText.setFillColor(sf::Color::Red);
+	gameOverText.setOutlineColor(sf::Color::Black);
+	gameOverText.setString("GAME OVER");
+	gameOverText.setPosition(
+		(window.getSize().x / 2.f) - (gameOverText.getGlobalBounds().width / 2.f), 
+		(window.getSize().y / 2.f) - (gameOverText.getGlobalBounds().height / 2.f));
+	bool isGameOver = false;
 
 
 	while (window.isOpen()) {
@@ -67,8 +87,17 @@ int main() {
 
 					if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
 
-						if (underTileMap[x][y].getType() == 9)
+						upperTileMap[x][y].removeTile();
+
+						if (underTileMap[x][y].getType() == 0) {
+							std::cout << "Atingiu um 0" << std::endl;
+							showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
+						}
+
+						else if (underTileMap[x][y].getType() == 9) {
 							std::cout << "Game Over" << std::endl;
+							isGameOver = true;
+						}
 					}
 				}
 				break;
@@ -84,13 +113,25 @@ int main() {
 		//Render background
 		window.draw(sprite);
 
-		//Render grid
+		//Render under grid
 		for (int i = 0; i < mapSize; i++) {
 			for (int j = 0; j < mapSize; j++) {
 
 				underTileMap[i][j].drawTile(window);
 			}
 		}
+
+		//Render upper grid
+		for (int i = 0; i < mapSize; i++) {
+			for (int j = 0; j < mapSize; j++) {
+
+				upperTileMap[i][j].drawTile(window);
+			}
+		}
+
+		//Render game over text
+		if (isGameOver)
+			window.draw(gameOverText);
 
 		//Done drawing
 		window.display();
