@@ -16,10 +16,15 @@ public:
 	float getSize();
 	void removeTile();
 	bool getIsRemoved();
+	void putFlag(int &flagsQuant);
+	bool getHasFlag();
 
 private:
 	sf::RectangleShape tile;
+	sf::Text text;
+	sf::Font font;
 	float size = 30.f;
 	bool isRemoved = false;
+	bool hasFlag = false;
 };
 

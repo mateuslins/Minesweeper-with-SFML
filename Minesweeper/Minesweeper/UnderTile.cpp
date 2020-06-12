@@ -47,6 +47,12 @@ int UnderTile::getType()
 	return type;
 }
 
+void UnderTile::setType(int t)
+{
+	type = t;
+	changeText();
+}
+
 float UnderTile::getSize()
 {
 	return size;
@@ -63,8 +69,12 @@ void UnderTile::changeText()
 	switch (type) {
 	case 0:
 		text.setString(" ");
+		break;
 	case 9:
 		text.setString("B");
+		break;
+	case 10:
+		text.setString(" ");
 		break;
 	default:
 		text.setString(std::to_string(type));
@@ -76,4 +86,14 @@ void UnderTile::addOnType()
 {
 	type++;
 	changeText();
+}
+
+bool UnderTile::getIsNearFirst()
+{
+	return isNearFirst;
+}
+
+void UnderTile::setIsNearFirstTrue()
+{
+	isNearFirst = true;
 }

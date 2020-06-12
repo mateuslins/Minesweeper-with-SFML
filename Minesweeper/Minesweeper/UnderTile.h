@@ -15,17 +15,24 @@ public:
 	void drawTile(sf::RenderWindow &window);
 	void plantBomb();
 	int getType();
+	void setType(int t);
 	float getSize();
 	void loadFont();
 	void changeText();
 	void addOnType();
+	bool getIsNearFirst();
+	void setIsNearFirstTrue();
 
 private:
 	sf::RectangleShape tile;
 	sf::Font font;
 	sf::Text text;
-	//std::stringstream ss;
 	float size = 30.f;
+	bool isNearFirst = false;
+
 	int type = 0;
+	// 0-8: bombs counter
+	// 9: bomb
+	// 10: first move
 };
 

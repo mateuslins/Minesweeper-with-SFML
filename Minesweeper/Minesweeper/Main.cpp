@@ -43,26 +43,21 @@ int main() {
 
 	//Init bombs
 	int bombsQuant = 30;
-	initBombs(bombsQuant, underTileMap, mapSize);
-	
-
-	//Init near bombs counter
-	nearBombsCounter(underTileMap, mapSize);
+	int flagsQuant = bombsQuant;
 
 	//Init texts on screen
 	sf::Font font;
 	font.loadFromFile("Arial.ttf");
 
 	sf::Text gameOverText;
-	gameOverText.setFont(font);
-	gameOverText.setCharacterSize(48.f);
-	gameOverText.setFillColor(sf::Color::Red);
-	gameOverText.setOutlineColor(sf::Color::Black);
-	gameOverText.setString("GAME OVER");
-	gameOverText.setPosition(
-		(window.getSize().x / 2.f) - (gameOverText.getGlobalBounds().width / 2.f), 
-		(window.getSize().y / 2.f) - (gameOverText.getGlobalBounds().height / 2.f));
+	initGameOverText(gameOverText, font, window);
+
+	sf::Text youWinText;
+	initYouWinText(youWinText, font, window);
+
+	//Init game states
 	bool isGameOver = false;
+	bool isFirstMove = true;
 
 
 	while (window.isOpen()) {
@@ -83,20 +78,47 @@ int main() {
 				break;
 
 			case sf::Event::MouseButtonPressed:
-				if (event.key.code == sf::Mouse::Left) {
+				if (!isGameOver) {
 
-					if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
+					if (event.key.code == sf::Mouse::Left) {
 
-						upperTileMap[x][y].removeTile();
+						if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
 
-						if (underTileMap[x][y].getType() == 0) {
-							std::cout << "Atingiu um 0" << std::endl;
-							showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
+							if (isFirstMove) {
+
+								underTileMap[x][y].setType(10);
+
+								initBombs(bombsQuant, underTileMap, mapSize, x, y);
+
+								nearBombsCounter(underTileMap, mapSize);
+
+								upperTileMap[x][y].removeTile();
+
+								showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
+
+								isFirstMove = false;
+							}
+							else {
+
+								upperTileMap[x][y].removeTile();
+
+								if (underTileMap[x][y].getType() == 0) {
+									std::cout << "Atingiu um 0" << std::endl;
+									showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
+								}
+
+								else if (underTileMap[x][y].getType() == 9 && upperTileMap[x][y].getHasFlag() == false) {
+									std::cout << "Game Over" << std::endl;
+									isGameOver = true;
+								}
+							}
 						}
+					}
 
-						else if (underTileMap[x][y].getType() == 9) {
-							std::cout << "Game Over" << std::endl;
-							isGameOver = true;
+					if (event.key.code == sf::Mouse::Right) {
+
+						if (x >= 0 && x < mapSize && y >= 0 && y < mapSize) {
+							upperTileMap[x][y].putFlag(flagsQuant);
 						}
 					}
 				}

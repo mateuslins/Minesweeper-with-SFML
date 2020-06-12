@@ -35,13 +35,46 @@ void initUpperGrid(std::vector<std::vector<UpperTile>>& upperTileMap, int mapSiz
 	}
 }
 
-void initBombs(int &bombsQuant, std::vector<std::vector<UnderTile>> &underTileMap, int mapSize) {
+void initBombs(int &bombsQuant, std::vector<std::vector<UnderTile>> &underTileMap, int mapSize, int x, int y) {
+
+	if (x - 1 >= 0 && y - 1 >= 0) {
+		underTileMap[x - 1][y - 1].setIsNearFirstTrue();
+	}
+
+	if (y - 1 >= 0) {
+		underTileMap[x][y - 1].setIsNearFirstTrue();
+	}
+
+	if (x + 1 <= mapSize - 1 && y - 1 >= 0) {
+		underTileMap[x + 1][y - 1].setIsNearFirstTrue();
+	}
+
+	if (x - 1 >= 0) {
+		underTileMap[x - 1][y].setIsNearFirstTrue();
+	}
+
+	if (x + 1 <= mapSize - 1) {
+		underTileMap[x + 1][y].setIsNearFirstTrue();
+	}
+
+	if (x - 1 >= 0 && y + 1 <= mapSize - 1) {
+		underTileMap[x - 1][y + 1].setIsNearFirstTrue();
+	}
+
+	if (y + 1 <= mapSize - 1) {
+		underTileMap[x][y + 1].setIsNearFirstTrue();
+	}
+
+	if (x + 1 <= mapSize - 1 && x + 1 <= mapSize - 1) {
+		underTileMap[x + 1][y + 1].setIsNearFirstTrue();
+	}
+
 	while (bombsQuant > 0) {
 
 		int i = rand() % mapSize;
 		int j = rand() % mapSize;
 
-		if (underTileMap[i][j].getType() != 9) {
+		if (underTileMap[i][j].getType() != 9 && underTileMap[i][j].getType() != 10 && underTileMap[i][j].getIsNearFirst() == false) {
 
 			underTileMap[i][j].plantBomb();
 			bombsQuant--;
@@ -53,7 +86,7 @@ void nearBombsCounter(std::vector<std::vector<UnderTile>> &underTileMap, int map
 	for (int i = 0; i < mapSize; i++) {
 		for (int j = 0; j < mapSize; j++) {
 
-			if (underTileMap[i][j].getType() != 9) {
+			if (underTileMap[i][j].getType() != 9 && underTileMap[i][j].getType() != 10) {
 
 				if (i - 1 >= 0 && j - 1 >= 0) {
 					if (underTileMap[i - 1][j - 1].getType() == 9)
@@ -164,4 +197,29 @@ void showAdjacents(std::vector<std::vector<UnderTile>>& underTileMap, std::vecto
 				showAdjacents(underTileMap, upperTileMap, i + 1, j + 1, mapSize);
 		}
 	}
+}
+
+void initGameOverText(sf::Text & gameOverText, sf::Font & font, sf::RenderWindow & window)
+{
+	gameOverText.setFont(font);
+	gameOverText.setCharacterSize(48.f);
+	gameOverText.setFillColor(sf::Color::Red);
+	gameOverText.setOutlineColor(sf::Color::Black);
+	gameOverText.setString("GAME OVER");
+	gameOverText.setPosition(
+		(window.getSize().x / 2.f) - (gameOverText.getGlobalBounds().width / 2.f),
+		(window.getSize().y / 2.f) - (gameOverText.getGlobalBounds().height / 2.f));
+}
+
+void initYouWinText(sf::Text & youWinText, sf::Font & font, sf::RenderWindow & window)
+{
+	youWinText.setFont(font);
+	youWinText.setCharacterSize(48.f);
+	youWinText.setFillColor(sf::Color::Green);
+	youWinText.setOutlineColor(sf::Color::Black);
+	youWinText.setString("YOU WIN");
+	youWinText.setPosition(
+		(window.getSize().x / 2.f) - (youWinText.getGlobalBounds().width / 2.f),
+		(window.getSize().y / 2.f) - (youWinText.getGlobalBounds().height / 2.f)
+	);
 }
