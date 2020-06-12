@@ -15,7 +15,7 @@ void initGrid(std::vector<std::vector<UnderTile>> &underTileMap, int mapSize, fl
 		underTileMap[i].resize(mapSize, UnderTile()); //Resizing to (mapSize) UnderTiles per vector (making column)
 		for (int j = 0; j < mapSize; j++) {
 
-			underTileMap[i][j].adjustPosition(i, j, topDistance, rightDistance);
+			underTileMap[i][j].adjustPosition(i, j, mapSize, topDistance, rightDistance);
 			underTileMap[i][j].loadFont();
 		}
 	}
@@ -30,7 +30,7 @@ void initUpperGrid(std::vector<std::vector<UpperTile>>& upperTileMap, int mapSiz
 		upperTileMap[i].resize(mapSize, UpperTile()); // Resizing to (mapSize) UpperTiles per vector (making the column)
 		for (int j = 0; j < mapSize; j++) {
 
-			upperTileMap[i][j].adjustPosition(i, j, topDistance, rightDistance);
+			upperTileMap[i][j].adjustPosition(i, j, mapSize, topDistance, rightDistance);
 		}
 	}
 }
@@ -132,69 +132,69 @@ void nearBombsCounter(std::vector<std::vector<UnderTile>> &underTileMap, int map
 	}
 }
 
-void showAdjacents(std::vector<std::vector<UnderTile>>& underTileMap, std::vector<std::vector<UpperTile>>& upperTileMap, int i, int j, int mapSize)
+void showAdjacents(std::vector<std::vector<UnderTile>>& underTileMap, std::vector<std::vector<UpperTile>>& upperTileMap, int i, int j, int mapSize, int& safeTiles)
 {
 	if (i - 1 >= 0 && j - 1 >= 0) {
 		if (upperTileMap[i - 1][j - 1].getIsRemoved() == false) {
-			upperTileMap[i - 1][j - 1].removeTile();
+			upperTileMap[i - 1][j - 1].removeTile(safeTiles);
 			if (underTileMap[i - 1][j - 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i - 1, j - 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i - 1, j - 1, mapSize, safeTiles);
 		}
 	}
 
 	if (j - 1 >= 0) {
 		if (upperTileMap[i][j - 1].getIsRemoved() == false) {
-			upperTileMap[i][j - 1].removeTile();
+			upperTileMap[i][j - 1].removeTile(safeTiles);
 			if (underTileMap[i][j - 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i, j - 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i, j - 1, mapSize, safeTiles);
 		}
 	}
 
 	if (i + 1 <= mapSize - 1 && j - 1 >= 0) {
 		if (upperTileMap[i + 1][j - 1].getIsRemoved() == false) {
-			upperTileMap[i + 1][j - 1].removeTile();
+			upperTileMap[i + 1][j - 1].removeTile(safeTiles);
 			if (underTileMap[i + 1][j - 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i + 1, j - 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i + 1, j - 1, mapSize, safeTiles);
 		}
 	}
 
 	if (i - 1 >= 0) {
 		if (upperTileMap[i - 1][j].getIsRemoved() == false) {
-			upperTileMap[i - 1][j].removeTile();
+			upperTileMap[i - 1][j].removeTile(safeTiles);
 			if (underTileMap[i - 1][j].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i - 1, j, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i - 1, j, mapSize, safeTiles);
 		}
 	}
 
 	if (i + 1 <= mapSize - 1) {
 		if (upperTileMap[i + 1][j].getIsRemoved() == false) {
-			upperTileMap[i + 1][j].removeTile();
+			upperTileMap[i + 1][j].removeTile(safeTiles);
 			if (underTileMap[i + 1][j].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i + 1, j, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i + 1, j, mapSize, safeTiles);
 		}
 	}
 
 	if (i - 1 >= 0 && j + 1 <= mapSize - 1) {
 		if (upperTileMap[i - 1][j + 1].getIsRemoved() == false) {
-			upperTileMap[i - 1][j + 1].removeTile();
+			upperTileMap[i - 1][j + 1].removeTile(safeTiles);
 			if (underTileMap[i - 1][j + 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i - 1, j + 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i - 1, j + 1, mapSize, safeTiles);
 		}
 	}
 
 	if (j + 1 <= mapSize - 1) {
 		if (upperTileMap[i][j + 1].getIsRemoved() == false) {
-			upperTileMap[i][j + 1].removeTile();
+			upperTileMap[i][j + 1].removeTile(safeTiles);
 			if (underTileMap[i][j + 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i, j + 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i, j + 1, mapSize, safeTiles);
 		}
 	}
 
 	if (i + 1 <= mapSize - 1 && j + 1 <= mapSize - 1) {
 		if (upperTileMap[i + 1][j + 1].getIsRemoved() == false) {
-			upperTileMap[i + 1][j + 1].removeTile();
+			upperTileMap[i + 1][j + 1].removeTile(safeTiles);
 			if (underTileMap[i + 1][j + 1].getType() == 0)
-				showAdjacents(underTileMap, upperTileMap, i + 1, j + 1, mapSize);
+				showAdjacents(underTileMap, upperTileMap, i + 1, j + 1, mapSize, safeTiles);
 		}
 	}
 }
@@ -205,6 +205,7 @@ void initGameOverText(sf::Text & gameOverText, sf::Font & font, sf::RenderWindow
 	gameOverText.setCharacterSize(48.f);
 	gameOverText.setFillColor(sf::Color::Red);
 	gameOverText.setOutlineColor(sf::Color::Black);
+	gameOverText.setOutlineThickness(1.f);
 	gameOverText.setString("GAME OVER");
 	gameOverText.setPosition(
 		(window.getSize().x / 2.f) - (gameOverText.getGlobalBounds().width / 2.f),
@@ -217,9 +218,21 @@ void initYouWinText(sf::Text & youWinText, sf::Font & font, sf::RenderWindow & w
 	youWinText.setCharacterSize(48.f);
 	youWinText.setFillColor(sf::Color::Green);
 	youWinText.setOutlineColor(sf::Color::Black);
+	youWinText.setOutlineThickness(1.f);
 	youWinText.setString("YOU WIN");
 	youWinText.setPosition(
 		(window.getSize().x / 2.f) - (youWinText.getGlobalBounds().width / 2.f),
 		(window.getSize().y / 2.f) - (youWinText.getGlobalBounds().height / 2.f)
 	);
+}
+
+void initGeneralText(sf::Text & generalText, sf::Font & font, sf::RenderWindow & window, int posX, int posY, int size)
+{
+	generalText.setFont(font);
+	generalText.setCharacterSize(size);
+	generalText.setFillColor(sf::Color::White);
+	generalText.setOutlineColor(sf::Color::Black);
+	generalText.setOutlineThickness(1.f);
+	//generalText.setString(text);
+	generalText.setPosition(posX, posY);
 }

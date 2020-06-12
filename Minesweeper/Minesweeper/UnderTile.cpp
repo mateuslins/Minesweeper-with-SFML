@@ -24,7 +24,7 @@ UnderTile::~UnderTile()
 {
 }
 
-void UnderTile::adjustPosition(int i, int j, float topDistance, float rigthDistance)
+void UnderTile::adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance)
 {
 	tile.setPosition(i * size + topDistance, j * size + rigthDistance);
 	text.setPosition(i * size + topDistance, j * size + rigthDistance);

@@ -11,7 +11,7 @@ public:
 	UnderTile();
 	~UnderTile();
 
-	void adjustPosition(int i, int j, float topDistance, float rigthDistance);
+	void adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance);
 	void drawTile(sf::RenderWindow &window);
 	void plantBomb();
 	int getType();

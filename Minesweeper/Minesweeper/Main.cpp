@@ -26,8 +26,10 @@ int main() {
 
 	//Init grid
 	const int mapSize = 12;
-	float topDistance = window.getSize().x / 5.f;
-	float rightDistance = window.getSize().y / 5.f;
+
+	UnderTile aux;
+	float topDistance = (window.getSize().x / 2.f) - (aux.getSize() / 2.f) - (aux.getSize() * mapSize / 2.f);
+	float rightDistance = (window.getSize().y / 2.f) - (aux.getSize() / 2.f) - (aux.getSize() * mapSize / 2.f);
 
 	std::vector<std::vector<UnderTile>> underTileMap; //Vector of vectors = 2D
 	
@@ -45,6 +47,13 @@ int main() {
 	int bombsQuant = 30;
 	int flagsQuant = bombsQuant;
 
+	//Init game states
+	bool isGameOver = false;
+	bool winCondition = false;
+	bool isFirstMove = true;
+	int dangerousTiles = bombsQuant;
+	int safeTiles = (mapSize * mapSize) - dangerousTiles;
+
 	//Init texts on screen
 	sf::Font font;
 	font.loadFromFile("Arial.ttf");
@@ -55,9 +64,11 @@ int main() {
 	sf::Text youWinText;
 	initYouWinText(youWinText, font, window);
 
-	//Init game states
-	bool isGameOver = false;
-	bool isFirstMove = true;
+	sf::Text flagsQuantText;
+	initGeneralText(flagsQuantText, font, window, 10, 10, 16);
+
+	sf::Text tilesRemainText;
+	initGeneralText(tilesRemainText, font, window, 10, 31, 16);
 
 
 	while (window.isOpen()) {
@@ -78,7 +89,7 @@ int main() {
 				break;
 
 			case sf::Event::MouseButtonPressed:
-				if (!isGameOver) {
+				if (!isGameOver && !winCondition) {
 
 					if (event.key.code == sf::Mouse::Left) {
 
@@ -92,25 +103,23 @@ int main() {
 
 								nearBombsCounter(underTileMap, mapSize);
 
-								upperTileMap[x][y].removeTile();
+								upperTileMap[x][y].removeTile(safeTiles);
 
-								showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
+								showAdjacents(underTileMap, upperTileMap, x, y, mapSize, safeTiles);
 
 								isFirstMove = false;
 							}
 							else {
 
-								upperTileMap[x][y].removeTile();
+								upperTileMap[x][y].removeTile(safeTiles);
 
-								if (underTileMap[x][y].getType() == 0) {
-									std::cout << "Atingiu um 0" << std::endl;
-									showAdjacents(underTileMap, upperTileMap, x, y, mapSize);
-								}
+								if (underTileMap[x][y].getType() == 0) 
+									showAdjacents(underTileMap, upperTileMap, x, y, mapSize, safeTiles);
+								
 
-								else if (underTileMap[x][y].getType() == 9 && upperTileMap[x][y].getHasFlag() == false) {
-									std::cout << "Game Over" << std::endl;
+								else if (underTileMap[x][y].getType() == 9 && upperTileMap[x][y].getHasFlag() == false) 
 									isGameOver = true;
-								}
+								
 							}
 						}
 					}
@@ -151,13 +160,30 @@ int main() {
 			}
 		}
 
+		//Render general text
+		std::stringstream ss1;
+		ss1 << "Flags: " << std::to_string(flagsQuant);
+		flagsQuantText.setString(ss1.str());
+		window.draw(flagsQuantText);
+
+		std::stringstream ss2;
+		ss2 << "Safe tiles left: " << std::to_string(safeTiles);
+		tilesRemainText.setString(ss2.str());
+		window.draw(tilesRemainText);
+
 		//Render game over text
 		if (isGameOver)
 			window.draw(gameOverText);
+
+		//Render win text
+		if (safeTiles == 0) {
+			winCondition = true;
+			window.draw(youWinText);
+		}
 
 		//Done drawing
 		window.display();
 	}
 
 	return 0;
-}
+};

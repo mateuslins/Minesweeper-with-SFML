@@ -11,10 +11,10 @@ public:
 	UpperTile();
 	~UpperTile();
 
-	void adjustPosition(int i, int j, float topDistance, float rigthDistance);
+	void adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance);
 	void drawTile(sf::RenderWindow &window);
 	float getSize();
-	void removeTile();
+	void removeTile(int &safeTiles);
 	bool getIsRemoved();
 	void putFlag(int &flagsQuant);
 	bool getHasFlag();

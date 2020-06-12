@@ -24,7 +24,7 @@ UpperTile::~UpperTile()
 {
 }
 
-void UpperTile::adjustPosition(int i, int j, float topDistance, float rigthDistance)
+void UpperTile::adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance)
 {
 	tile.setPosition(i * size + topDistance, j * size + rigthDistance);
 	text.setPosition(i * size + topDistance, j * size + rigthDistance);
@@ -47,10 +47,12 @@ float UpperTile::getSize()
 	return size;
 }
 
-void UpperTile::removeTile()
+void UpperTile::removeTile(int & safeTiles)
 {
-	if (!hasFlag)
+	if (!hasFlag && !isRemoved) {
 		isRemoved = true;
+		safeTiles--;
+	}
 }
 
 bool UpperTile::getIsRemoved()
@@ -60,17 +62,19 @@ bool UpperTile::getIsRemoved()
 
 void UpperTile::putFlag(int &flagsQuant)
 {
-	if (!hasFlag) {
-		if (flagsQuant > 0) {
-			font.loadFromFile("Arial.ttf");
-			text.setFont(font);
-			hasFlag = true;
-			flagsQuant--;
+	if (!isRemoved) {
+		if (!hasFlag) {
+			if (flagsQuant > 0) {
+				font.loadFromFile("Arial.ttf");
+				text.setFont(font);
+				hasFlag = true;
+				flagsQuant--;
+			}
 		}
-	}
-	else {
-		hasFlag = false;
-		flagsQuant++;
+		else {
+			hasFlag = false;
+			flagsQuant++;
+		}
 	}
 }
 
