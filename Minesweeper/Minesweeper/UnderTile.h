@@ -5,6 +5,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+// This class represents the tiles that will be hidden at the beggining
+
 class UnderTile
 {
 public:

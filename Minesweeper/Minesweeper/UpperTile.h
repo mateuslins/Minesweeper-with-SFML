@@ -5,6 +5,8 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 
+// This class represent the tiles that will hide the ones with the numbers and bombs
+
 class UpperTile
 {
 public:

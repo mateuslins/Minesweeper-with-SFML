@@ -7,6 +7,47 @@
 #include "UpperTile.h"
 #include "Functions.h"
 
+// Initiate game variables by levels
+void initGame(int & mapSize, float & topDistance, float & rightDistance,
+	sf::RenderWindow &window, UnderTile aux,
+	std::vector<std::vector<UnderTile>>& underTileMap, 
+	std::vector<std::vector<UpperTile>>& upperTileMap, 
+	int & bombsQuant, int & flagsQuant, int & dangerousTiles, int & safeTiles, int level)
+{
+	switch (level) {
+
+	case 1:
+		mapSize = 10;
+		bombsQuant = 20;
+		break;
+
+	case 2:
+		mapSize = 12;
+		bombsQuant = 30;
+		break;
+
+	case 3:
+		mapSize = 14;
+		bombsQuant = 50;
+		break;
+
+	default:
+		break;
+	}
+
+	topDistance = (window.getSize().x / 2.f) - (aux.getSize() / 2.f) - (aux.getSize() * mapSize / 2.f);
+	rightDistance = (window.getSize().y / 2.f) - (aux.getSize() / 2.f) - (aux.getSize() * mapSize / 2.f);
+
+	initGrid(underTileMap, mapSize, topDistance, rightDistance);
+	initUpperGrid(upperTileMap, mapSize, topDistance, rightDistance);
+
+	flagsQuant = bombsQuant;
+
+	dangerousTiles = bombsQuant;
+	safeTiles = (mapSize * mapSize) - dangerousTiles;
+}
+
+// Initiate the under grid
 void initGrid(std::vector<std::vector<UnderTile>> &underTileMap, int mapSize, float topDistance, float rightDistance) {
 	underTileMap.resize(mapSize, std::vector<UnderTile>()); //Resizing to (mapSize) vectors of UnderTiles (making a line)
 
@@ -21,6 +62,7 @@ void initGrid(std::vector<std::vector<UnderTile>> &underTileMap, int mapSize, fl
 	}
 }
 
+// Initiate the upper grid
 void initUpperGrid(std::vector<std::vector<UpperTile>>& upperTileMap, int mapSize, float topDistance, float rightDistance)
 {
 	upperTileMap.resize(mapSize, std::vector<UpperTile>()); // Resizing to (mapSize) vectors of UpperTiles (making the lines)
@@ -35,6 +77,8 @@ void initUpperGrid(std::vector<std::vector<UpperTile>>& upperTileMap, int mapSiz
 	}
 }
 
+// Randomly initiate the bombs on the grid,
+// not selecting the tiles near the first tile choosed
 void initBombs(int &bombsQuant, std::vector<std::vector<UnderTile>> &underTileMap, int mapSize, int x, int y) {
 
 	if (x - 1 >= 0 && y - 1 >= 0) {
@@ -82,6 +126,7 @@ void initBombs(int &bombsQuant, std::vector<std::vector<UnderTile>> &underTileMa
 	}
 }
 
+// Increase the type of the under tile by counting how many bombs are next to it
 void nearBombsCounter(std::vector<std::vector<UnderTile>> &underTileMap, int mapSize) {
 	for (int i = 0; i < mapSize; i++) {
 		for (int j = 0; j < mapSize; j++) {
@@ -132,6 +177,8 @@ void nearBombsCounter(std::vector<std::vector<UnderTile>> &underTileMap, int map
 	}
 }
 
+// Reveal all the under tiles around if it has 0 bombs next to it,
+// and recursively if there are more 0 types on the range
 void showAdjacents(std::vector<std::vector<UnderTile>>& underTileMap, std::vector<std::vector<UpperTile>>& upperTileMap, int i, int j, int mapSize, int& safeTiles)
 {
 	if (i - 1 >= 0 && j - 1 >= 0) {
@@ -226,13 +273,22 @@ void initYouWinText(sf::Text & youWinText, sf::Font & font, sf::RenderWindow & w
 	);
 }
 
-void initGeneralText(sf::Text & generalText, sf::Font & font, sf::RenderWindow & window, int posX, int posY, int size)
+void initGeneralText(sf::Text & generalText, sf::Font & font, sf::RenderWindow & window, sf::Color color, int posX, int posY, int size)
 {
 	generalText.setFont(font);
 	generalText.setCharacterSize(size);
-	generalText.setFillColor(sf::Color::White);
+	generalText.setFillColor(color);
 	generalText.setOutlineColor(sf::Color::Black);
 	generalText.setOutlineThickness(1.f);
-	//generalText.setString(text);
 	generalText.setPosition(posX, posY);
+}
+
+void initMenuText(sf::Text & menuText, sf::Font & font, sf::RenderWindow & window, sf::Color color, int posY, int size)
+{
+	menuText.setFont(font);
+	menuText.setCharacterSize(size);
+	menuText.setFillColor(color);
+	menuText.setOutlineColor(sf::Color::Black);
+	menuText.setOutlineThickness(1.f);
+	menuText.setPosition((window.getSize().x / 2.f) - (menuText.getGlobalBounds().width / 2.f), posY);
 }

@@ -24,12 +24,14 @@ UpperTile::~UpperTile()
 {
 }
 
+// Set positions on grid
 void UpperTile::adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance)
 {
 	tile.setPosition(i * size + topDistance, j * size + rigthDistance);
 	text.setPosition(i * size + topDistance, j * size + rigthDistance);
 }
 
+// Draw tile and flag
 void UpperTile::drawTile(sf::RenderWindow & window)
 {
 	if (!isRemoved) {
@@ -47,6 +49,7 @@ float UpperTile::getSize()
 	return size;
 }
 
+// Stop drawing tile
 void UpperTile::removeTile(int & safeTiles)
 {
 	if (!hasFlag && !isRemoved) {
@@ -60,6 +63,7 @@ bool UpperTile::getIsRemoved()
 	return isRemoved;
 }
 
+//Put or remove flag on tile
 void UpperTile::putFlag(int &flagsQuant)
 {
 	if (!isRemoved) {

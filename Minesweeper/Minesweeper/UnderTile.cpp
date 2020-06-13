@@ -24,18 +24,21 @@ UnderTile::~UnderTile()
 {
 }
 
+// Set positions on grid
 void UnderTile::adjustPosition(int i, int j, int mapSize, float topDistance, float rigthDistance)
 {
 	tile.setPosition(i * size + topDistance, j * size + rigthDistance);
 	text.setPosition(i * size + topDistance, j * size + rigthDistance);
 }
 
+// Draw tile and text
 void UnderTile::drawTile(sf::RenderWindow &window)
 {
 	window.draw(tile);
 	window.draw(text);
 }
 
+// Set type as 9 (bomb)
 void UnderTile::plantBomb()
 {
 	type = 9;
@@ -64,6 +67,7 @@ void UnderTile::loadFont()
 	text.setFont(font);
 }
 
+// Change text by type of the tile
 void UnderTile::changeText()
 {
 	switch (type) {
@@ -82,6 +86,7 @@ void UnderTile::changeText()
 	}
 }
 
+// Increase near bombs quantity adding +1 on type
 void UnderTile::addOnType()
 {
 	type++;
@@ -93,6 +98,7 @@ bool UnderTile::getIsNearFirst()
 	return isNearFirst;
 }
 
+// Set if the tile is next to the first tile selected
 void UnderTile::setIsNearFirstTrue()
 {
 	isNearFirst = true;
